@@ -1,10 +1,13 @@
 package pl.nollis.connector;
 
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import pl.nollis.connector.commands.SpawnCommand;
+import pl.nollis.connector.commands.TowerPvPCommand;
 import pl.nollis.connector.listeners.InventoryProtectionListener;
 import pl.nollis.connector.listeners.LobbyItemListener;
 import pl.nollis.connector.listeners.PlayerJoinListener;
+import pl.nollis.connector.listeners.SecureLoginListener;
 import pl.nollis.connector.managers.GameModeGUIManager;
 import pl.nollis.connector.managers.LobbyItemManager;
 import pl.nollis.connector.managers.SpawnManager;
@@ -47,12 +50,22 @@ public class NollisPluginsConnector extends JavaPlugin {
     private void registerCommands() {
         SpawnCommand spawnCommand = new SpawnCommand(this);
         getCommand("spawn").setExecutor(spawnCommand);
+
+        TowerPvPCommand towerPvPCommand = new TowerPvPCommand(this);
+        getCommand("lobby").setExecutor(towerPvPCommand);
+        getCommand("hub").setExecutor(towerPvPCommand);
     }
 
     private void registerListeners() {
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
         getServer().getPluginManager().registerEvents(new LobbyItemListener(this), this);
         getServer().getPluginManager().registerEvents(new InventoryProtectionListener(this), this);
+
+        // Register SecureLogin listener if SecureLogin plugin is present
+        if (Bukkit.getPluginManager().isPluginEnabled("SecureLogin")) {
+            getServer().getPluginManager().registerEvents(new SecureLoginListener(this), this);
+            getLogger().info("SecureLogin integration enabled!");
+        }
     }
 
     public static NollisPluginsConnector getInstance() {

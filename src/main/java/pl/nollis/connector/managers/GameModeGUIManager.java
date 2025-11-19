@@ -250,6 +250,9 @@ public class GameModeGUIManager {
             Location location = new Location(world, x, y, z, yaw, pitch);
             player.teleport(location);
 
+            // Clear inventory (remove compass and other lobby items)
+            player.getInventory().clear();
+
             // Give TowerPvP lobby items
             if (modeSection.getBoolean("give-lobby-items", true)) {
                 Object lobbyItemManager = towerPvPClass.getMethod("getLobbyItemManager").invoke(towerPvPInstance);
