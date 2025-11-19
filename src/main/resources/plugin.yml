@@ -1,0 +1,24 @@
+name: nNollisPluginsConnector
+version: '1.0.0'
+main: pl.nollis.connector.NollisPluginsConnector
+api-version: '1.21'
+depend: []
+softdepend: [TowerPvP, CaveWars]
+authors: [Nollis]
+description: |
+  Multi-game mode connector plugin
+  Manages main spawn and game mode selection
+
+commands:
+  spawn:
+    description: Teleport to main spawn
+    usage: /spawn
+    aliases: [lobby, hub]
+
+permissions:
+  nollisconnector.spawn:
+    description: Use /spawn command
+    default: true
+  nollisconnector.admin:
+    description: Admin permissions (bypass lobby protection)
+    default: op

@@ -1,0 +1,89 @@
+# ===========================================
+# nNollisPluginsConnector Configuration
+# ===========================================
+
+# Main spawn location
+spawn:
+  world: "spawn"
+  x: 0.5
+  y: 100.0
+  z: 0.5
+  yaw: 0.0
+  pitch: 0.0
+
+# Lobby items (on main spawn)
+lobby-items:
+  game-selector:
+    enabled: true
+    slot: 4  # Middle slot (0-8)
+    material: COMPASS
+    name: "§6§lGame Mode Selector"
+    lore:
+      - "§7Click to choose a game mode!"
+      - ""
+      - "§eRight click to open menu"
+    unbreakable: true
+    hide-attributes: true
+
+# Game modes available
+game-modes:
+  towerpvp:
+    enabled: true
+    display-name: "§6§lTower PvP"
+    material: BEDROCK
+    slot: 4  # Position in GUI
+    lore:
+      - "§7Battle on towers!"
+      - "§7Build, fight, survive!"
+      - ""
+      - "§a▶ Click to join!"
+    target-world: "towerpvp_spawn"
+    target-coords:
+      x: 0.5
+      y: 100.0
+      z: 0.5
+      yaw: 0.0
+      pitch: 0.0
+    # Integration with TowerPvP API
+    give-lobby-items: true
+
+  # Future game mode: Cave Wars
+  # cavewars:
+  #   enabled: false
+  #   display-name: "§c§lCave Wars"
+  #   material: IRON_PICKAXE
+  #   slot: 3
+  #   lore:
+  #     - "§7Mine and fight in caves!"
+  #     - ""
+  #     - "§a▶ Click to join!"
+  #   target-world: "cavewars_spawn"
+  #   target-coords:
+  #     x: 0.5
+  #     y: 64.0
+  #     z: 0.5
+
+# GUI settings
+gui:
+  title: "§6§lGame Mode Selector"
+  size: 9  # 1 row
+  filler-material: BLACK_STAINED_GLASS_PANE
+  filler-name: " "
+
+# Messages
+messages:
+  teleporting-to-spawn: "§aTeleporting to spawn..."
+  teleporting-to-gamemode: "§aTeleporting to %gamemode%..."
+  gamemode-disabled: "§cThis game mode is currently disabled!"
+  no-permission: "§cYou don't have permission to use this command!"
+  plugin-not-available: "§c%plugin% is not available!"
+
+# Protection settings
+protection:
+  spawn-world: "spawn"  # World name to protect
+  prevent-block-break: true
+  prevent-block-place: true
+  prevent-pvp: true
+  prevent-item-drop: true
+  prevent-item-pickup: false
+  prevent-hunger: true
