@@ -63,7 +63,8 @@ public class NollisPluginsConnector extends JavaPlugin {
 
         // Register SecureLogin listener if SecureLogin plugin is present
         if (Bukkit.getPluginManager().isPluginEnabled("SecureLogin")) {
-            getServer().getPluginManager().registerEvents(new SecureLoginListener(this), this);
+            SecureLoginListener secureLoginListener = new SecureLoginListener(this);
+            secureLoginListener.register();
             getLogger().info("SecureLogin integration enabled!");
         }
     }

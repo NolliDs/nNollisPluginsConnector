@@ -3,9 +3,10 @@ package pl.nollis.connector.listeners;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.plugin.EventExecutor;
 import pl.nollis.connector.NollisPluginsConnector;
 
 public class SecureLoginListener implements Listener {
@@ -17,19 +18,46 @@ public class SecureLoginListener implements Listener {
     }
 
     /**
-     * Listen for SecureLogin's PlayerLoginEvent (when player successfully logs in)
-     * This event is fired by SecureLogin plugin after player authentication
+     * Register this listener dynamically to listen for SecureLogin's PlayerLoginEvent
      */
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void onSecureLogin(org.bukkit.event.Event event) {
-        // Check if this is SecureLogin's PlayerLoginEvent
-        if (!event.getClass().getName().equals("pl.nollis.securelogin.events.PlayerLoginEvent")) {
-            return;
-        }
+    public void register() {
+        try {
+            // Get SecureLogin's PlayerLoginEvent class
+            Class<?> loginEventClass = Class.forName("pl.nollis.securelogin.events.PlayerLoginEvent");
 
+            // Create event executor
+            EventExecutor executor = (listener, event) -> {
+                if (loginEventClass.isInstance(event)) {
+                    handleLoginEvent((Event) event);
+                }
+            };
+
+            // Register the event
+            Bukkit.getPluginManager().registerEvent(
+                (Class<? extends Event>) loginEventClass,
+                this,
+                EventPriority.MONITOR,
+                executor,
+                plugin,
+                false
+            );
+
+            plugin.getLogger().info("Successfully registered SecureLogin listener!");
+
+        } catch (ClassNotFoundException e) {
+            plugin.getLogger().warning("Could not find SecureLogin PlayerLoginEvent class: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Handle SecureLogin login event
+     */
+    private void handleLoginEvent(Event event) {
         try {
             // Use reflection to get the player from the event
             Player player = (Player) event.getClass().getMethod("getPlayer").invoke(event);
+
+            plugin.getLogger().info("Player " + player.getName() + " logged in through SecureLogin");
 
             // Teleport to spawn after successful login
             Location spawnLocation = plugin.getSpawnManager().getSpawnLocation();
@@ -38,10 +66,11 @@ public class SecureLoginListener implements Listener {
             // Give lobby items (compass on slot 4)
             plugin.getLobbyItemManager().giveLobbyItems(player);
 
-            plugin.getLogger().fine("Player " + player.getName() + " logged in and teleported to spawn");
+            plugin.getLogger().info("Teleported " + player.getName() + " to spawn and gave lobby items");
 
         } catch (Exception e) {
             plugin.getLogger().warning("Failed to handle SecureLogin event: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 }
