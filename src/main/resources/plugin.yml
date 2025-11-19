@@ -3,7 +3,7 @@ version: '1.0.0'
 main: pl.nollis.connector.NollisPluginsConnector
 api-version: '1.21'
 depend: []
-softdepend: [TowerPvP, CaveWars]
+softdepend: [TowerPvP, CaveWars, SecureLogin]
 authors: [Nollis]
 description: |
   Multi-game mode connector plugin
@@ -13,11 +13,19 @@ commands:
   spawn:
     description: Teleport to main spawn
     usage: /spawn
-    aliases: [lobby, hub]
+  lobby:
+    description: Teleport to TowerPvP lobby
+    usage: /lobby
+  hub:
+    description: Teleport to TowerPvP lobby
+    usage: /hub
 
 permissions:
   nollisconnector.spawn:
     description: Use /spawn command
+    default: true
+  nollisconnector.lobby:
+    description: Use /lobby and /hub commands
     default: true
   nollisconnector.admin:
     description: Admin permissions (bypass lobby protection)

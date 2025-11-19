@@ -8,6 +8,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import pl.nollis.connector.NollisPluginsConnector;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class LobbyItemManager {

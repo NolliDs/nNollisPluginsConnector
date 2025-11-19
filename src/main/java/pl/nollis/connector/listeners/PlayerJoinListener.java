@@ -1,5 +1,6 @@
 package pl.nollis.connector.listeners;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -20,7 +21,15 @@ public class PlayerJoinListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
-        // Teleport to spawn
+        // Check if SecureLogin is enabled
+        if (Bukkit.getPluginManager().isPluginEnabled("SecureLogin")) {
+            // Don't teleport to spawn - SecureLoginListener will handle it after login
+            // Player stays in SecureLogin world until they authenticate
+            plugin.getLogger().fine("SecureLogin detected - skipping spawn teleport for " + player.getName());
+            return;
+        }
+
+        // SecureLogin not enabled - teleport to spawn normally
         Location spawnLocation = plugin.getSpawnManager().getSpawnLocation();
         player.teleport(spawnLocation);
 
