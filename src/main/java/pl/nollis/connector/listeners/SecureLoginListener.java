@@ -59,14 +59,20 @@ public class SecureLoginListener implements Listener {
 
             plugin.getLogger().info("Player " + player.getName() + " logged in through SecureLogin");
 
-            // Teleport to spawn after successful login
-            Location spawnLocation = plugin.getSpawnManager().getSpawnLocation();
-            player.teleport(spawnLocation);
+            // Schedule teleport and compass giving with 1 tick delay to ensure everything is ready
+            Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                // Teleport to spawn after successful login
+                Location spawnLocation = plugin.getSpawnManager().getSpawnLocation();
+                player.teleport(spawnLocation);
 
-            // Give lobby items (compass on slot 4)
-            plugin.getLobbyItemManager().giveLobbyItems(player);
+                // Clear inventory first
+                player.getInventory().clear();
 
-            plugin.getLogger().info("Teleported " + player.getName() + " to spawn and gave lobby items");
+                // Give lobby items (compass on slot 4)
+                plugin.getLobbyItemManager().giveLobbyItems(player);
+
+                plugin.getLogger().info("Teleported " + player.getName() + " to spawn and gave compass");
+            }, 1L);
 
         } catch (Exception e) {
             plugin.getLogger().warning("Failed to handle SecureLogin event: " + e.getMessage());

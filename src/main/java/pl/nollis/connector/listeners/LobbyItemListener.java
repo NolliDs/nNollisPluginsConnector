@@ -23,8 +23,9 @@ public class LobbyItemListener implements Listener {
 
     /**
      * Handle player clicking the compass to open GUI
+     * Using LOWEST priority to cancel the event as early as possible
      */
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
     public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         ItemStack item = event.getItem();
@@ -35,8 +36,10 @@ public class LobbyItemListener implements Listener {
 
         // Check if it's the game selector compass
         if (plugin.getLobbyItemManager().isGameSelectorItem(item)) {
-            // Cancel ALL interactions with the compass to prevent teleporting
+            // Cancel ALL interactions with the compass to prevent ANY action (including teleporting)
             event.setCancelled(true);
+            event.setUseItemInHand(org.bukkit.event.Event.Result.DENY);
+            event.setUseInteractedBlock(org.bukkit.event.Event.Result.DENY);
 
             // Only open GUI on right-click
             if (event.getAction() == Action.RIGHT_CLICK_AIR ||

@@ -2,6 +2,7 @@ package pl.nollis.connector;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
+import pl.nollis.connector.commands.ReloadCommand;
 import pl.nollis.connector.commands.SpawnCommand;
 import pl.nollis.connector.commands.TowerPvPCommand;
 import pl.nollis.connector.listeners.InventoryProtectionListener;
@@ -11,6 +12,7 @@ import pl.nollis.connector.listeners.SecureLoginListener;
 import pl.nollis.connector.managers.GameModeGUIManager;
 import pl.nollis.connector.managers.LobbyItemManager;
 import pl.nollis.connector.managers.SpawnManager;
+import pl.nollis.connector.tasks.CompassCheckTask;
 
 public class NollisPluginsConnector extends JavaPlugin {
 
@@ -38,6 +40,9 @@ public class NollisPluginsConnector extends JavaPlugin {
         // Register listeners
         registerListeners();
 
+        // Start compass check task (runs every 5 seconds = 100 ticks)
+        new CompassCheckTask(this).runTaskTimer(this, 100L, 100L);
+
         getLogger().info("nNollisPluginsConnector has been enabled!");
         getLogger().info("Game mode connector is ready!");
     }
@@ -54,6 +59,9 @@ public class NollisPluginsConnector extends JavaPlugin {
         TowerPvPCommand towerPvPCommand = new TowerPvPCommand(this);
         getCommand("lobby").setExecutor(towerPvPCommand);
         getCommand("hub").setExecutor(towerPvPCommand);
+
+        ReloadCommand reloadCommand = new ReloadCommand(this);
+        getCommand("nreload").setExecutor(reloadCommand);
     }
 
     private void registerListeners() {

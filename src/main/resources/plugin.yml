@@ -19,6 +19,10 @@ commands:
   hub:
     description: Teleport to TowerPvP lobby
     usage: /hub
+  nreload:
+    description: Reload plugin configuration
+    usage: /nreload
+    permission: nollisconnector.admin
 
 permissions:
   nollisconnector.spawn:
