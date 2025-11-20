@@ -44,8 +44,75 @@ public class LobbyItemListener implements Listener {
             // Only open GUI on right-click
             if (event.getAction() == Action.RIGHT_CLICK_AIR ||
                 event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+
+                // Block if player is in CaveWars waiting room
+                if (isInCaveWarsLobby(player)) {
+                    player.sendMessage("§cYou are already in a CaveWars waiting lobby! Use §e/cavewars leave §cto return to the hub.");
+                    return;
+                }
+
+                // Block if player is in CaveWars game
+                if (isInCaveWarsGame(player)) {
+                    player.sendMessage("§cYou are in a CaveWars game! Use §e/cavewars leave §cto return to the hub.");
+                    return;
+                }
+
                 plugin.getGameModeGUIManager().openGameModeGUI(player);
             }
+        }
+    }
+
+    /**
+     * Check if player is in CaveWars waiting lobby using reflection
+     */
+    private boolean isInCaveWarsLobby(Player player) {
+        try {
+            Object caveWarsPlugin = plugin.getServer().getPluginManager().getPlugin("CaveWars");
+            if (caveWarsPlugin == null) {
+                return false;
+            }
+
+            // Get LobbyManager
+            Object lobbyManager = caveWarsPlugin.getClass().getMethod("getLobbyManager").invoke(caveWarsPlugin);
+            if (lobbyManager == null) {
+                return false;
+            }
+
+            // Call isPlayerInAnyLobby(player)
+            Boolean result = (Boolean) lobbyManager.getClass()
+                    .getMethod("isPlayerInAnyLobby", Player.class)
+                    .invoke(lobbyManager, player);
+
+            return result != null && result;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /**
+     * Check if player is in CaveWars active game using reflection
+     */
+    private boolean isInCaveWarsGame(Player player) {
+        try {
+            Object caveWarsPlugin = plugin.getServer().getPluginManager().getPlugin("CaveWars");
+            if (caveWarsPlugin == null) {
+                return false;
+            }
+
+            // Get GameManager
+            Object gameManager = caveWarsPlugin.getClass().getMethod("getGameManager").invoke(caveWarsPlugin);
+            if (gameManager == null) {
+                return false;
+            }
+
+            // Call isInGame(player)
+            Boolean result = (Boolean) gameManager.getClass()
+                    .getMethod("isInGame", Player.class)
+                    .invoke(gameManager, player);
+
+            return result != null && result;
+        } catch (Exception e) {
+            return false;
         }
     }
 

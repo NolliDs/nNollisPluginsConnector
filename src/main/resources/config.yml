@@ -47,21 +47,20 @@ game-modes:
     # Integration with TowerPvP API
     give-lobby-items: true
 
-  # Future game mode: Cave Wars
-  # cavewars:
-  #   enabled: false
-  #   display-name: "§c§lCave Wars"
-  #   material: IRON_PICKAXE
-  #   slot: 3
-  #   lore:
-  #     - "§7Mine and fight in caves!"
-  #     - ""
-  #     - "§a▶ Click to join!"
-  #   target-world: "cavewars_spawn"
-  #   target-coords:
-  #     x: 0.5
-  #     y: 64.0
-  #     z: 0.5
+  # Cave Wars game mode
+  cavewars:
+    enabled: true
+    display-name: "§c§lCave Wars"
+    material: IRON_PICKAXE
+    slot: 3
+    lore:
+      - "§7Mine and fight in caves!"
+      - "§7Protected spawn zones!"
+      - ""
+      - "§a▶ Click to join!"
+    # CaveWars uses its own command system
+    use-command: true
+    command: "cavewars join cave1"  # Join specific map
 
 # GUI settings
 gui:

@@ -210,6 +210,19 @@ public class GameModeGUIManager {
      * Teleport player to a generic game mode
      */
     private void teleportToGenericGameMode(Player player, String gameModeName, ConfigurationSection modeSection) {
+        // Check if game mode uses command instead of teleportation
+        boolean useCommand = modeSection.getBoolean("use-command", false);
+        if (useCommand) {
+            String command = modeSection.getString("command");
+            if (command == null || command.isEmpty()) {
+                player.sendMessage("§cGame mode configuration error!");
+                return;
+            }
+
+            // Execute command as player
+            player.performCommand(command);
+            return;
+        }
 
         // Generic teleportation for other game modes
         String worldName = modeSection.getString("target-world");
