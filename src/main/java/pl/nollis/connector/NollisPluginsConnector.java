@@ -2,15 +2,19 @@ package pl.nollis.connector;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
+import pl.nollis.connector.api.PartyAPI;
+import pl.nollis.connector.commands.PartyCommand;
 import pl.nollis.connector.commands.ReloadCommand;
 import pl.nollis.connector.commands.SpawnCommand;
 import pl.nollis.connector.commands.TowerPvPCommand;
 import pl.nollis.connector.listeners.InventoryProtectionListener;
 import pl.nollis.connector.listeners.LobbyItemListener;
+import pl.nollis.connector.listeners.PartyListener;
 import pl.nollis.connector.listeners.PlayerJoinListener;
 import pl.nollis.connector.listeners.SecureLoginListener;
 import pl.nollis.connector.managers.GameModeGUIManager;
 import pl.nollis.connector.managers.LobbyItemManager;
+import pl.nollis.connector.managers.PartyManager;
 import pl.nollis.connector.managers.SpawnManager;
 import pl.nollis.connector.tasks.CompassCheckTask;
 
@@ -21,6 +25,7 @@ public class NollisPluginsConnector extends JavaPlugin {
     private SpawnManager spawnManager;
     private LobbyItemManager lobbyItemManager;
     private GameModeGUIManager gameModeGUIManager;
+    private PartyManager partyManager;
 
     @Override
     public void onEnable() {
@@ -33,6 +38,7 @@ public class NollisPluginsConnector extends JavaPlugin {
         this.spawnManager = new SpawnManager(this);
         this.lobbyItemManager = new LobbyItemManager(this);
         this.gameModeGUIManager = new GameModeGUIManager(this);
+        this.partyManager = new PartyManager(this);
 
         // Register commands
         registerCommands();
@@ -42,6 +48,9 @@ public class NollisPluginsConnector extends JavaPlugin {
 
         // Start compass check task (runs every 5 seconds = 100 ticks)
         new CompassCheckTask(this).runTaskTimer(this, 100L, 100L);
+
+        // Start party invite cleanup task
+        partyManager.startInviteCleanupTask();
 
         getLogger().info("nNollisPluginsConnector has been enabled!");
         getLogger().info("Game mode connector is ready!");
@@ -62,12 +71,16 @@ public class NollisPluginsConnector extends JavaPlugin {
 
         ReloadCommand reloadCommand = new ReloadCommand(this);
         getCommand("nreload").setExecutor(reloadCommand);
+
+        PartyCommand partyCommand = new PartyCommand(this);
+        getCommand("party").setExecutor(partyCommand);
     }
 
     private void registerListeners() {
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
         getServer().getPluginManager().registerEvents(new LobbyItemListener(this), this);
         getServer().getPluginManager().registerEvents(new InventoryProtectionListener(this), this);
+        getServer().getPluginManager().registerEvents(new PartyListener(this), this);
 
         // Register SecureLogin listener if SecureLogin plugin is present
         if (Bukkit.getPluginManager().isPluginEnabled("SecureLogin")) {
@@ -91,5 +104,13 @@ public class NollisPluginsConnector extends JavaPlugin {
 
     public GameModeGUIManager getGameModeGUIManager() {
         return gameModeGUIManager;
+    }
+
+    public PartyManager getPartyManager() {
+        return partyManager;
+    }
+
+    public PartyAPI getPartyAPI() {
+        return partyManager;
     }
 }

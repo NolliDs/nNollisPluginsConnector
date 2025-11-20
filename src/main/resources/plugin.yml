@@ -23,6 +23,16 @@ commands:
     description: Reload plugin configuration
     usage: /nreload
     permission: nollisconnector.admin
+  party:
+    description: Party management commands
+    usage: |
+      /party create - Create a party
+      /party invite <player> - Invite player
+      /party accept <leader> - Accept invite
+      /party kick <player> - Kick player
+      /party leave - Leave party
+      /party list - List members
+      /party disband - Disband party
 
 permissions:
   nollisconnector.spawn:
@@ -30,6 +40,9 @@ permissions:
     default: true
   nollisconnector.lobby:
     description: Use /lobby and /hub commands
+    default: true
+  nollisconnector.party:
+    description: Use party commands
     default: true
   nollisconnector.admin:
     description: Admin permissions (bypass lobby protection)

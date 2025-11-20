@@ -10,6 +10,8 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import pl.nollis.connector.NollisPluginsConnector;
 
+import java.util.UUID;
+
 public class TowerPvPCommand implements CommandExecutor {
 
     private final NollisPluginsConnector plugin;
@@ -33,11 +35,30 @@ public class TowerPvPCommand implements CommandExecutor {
             return true;
         }
 
-        // Remove player from TowerPvP game if in game
-        removeFromTowerPvP(player);
+        // Check if player is in a party
+        if (plugin.getPartyAPI().isInParty(player)) {
+            // Only leader can teleport party
+            if (!plugin.getPartyAPI().isPartyLeader(player)) {
+                player.sendMessage("§cOnly the party leader can teleport the party!");
+                return true;
+            }
 
-        // Teleport to towerpvp_spawn
-        teleportToTowerPvP(player);
+            // Teleport entire party
+            for (UUID memberUUID : plugin.getPartyAPI().getPartyMembers(player)) {
+                Player member = Bukkit.getPlayer(memberUUID);
+                if (member != null && member.isOnline()) {
+                    removeFromTowerPvP(member);
+                    teleportToTowerPvP(member);
+                }
+            }
+
+            plugin.getPartyAPI().notifyPartyMembers(plugin.getPartyAPI().getParty(player),
+                "§aYour party is going to TowerPvP!");
+        } else {
+            // Solo player
+            removeFromTowerPvP(player);
+            teleportToTowerPvP(player);
+        }
 
         return true;
     }

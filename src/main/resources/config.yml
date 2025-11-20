@@ -87,3 +87,48 @@ protection:
   prevent-item-drop: true
   prevent-item-pickup: false
   prevent-hunger: true
+
+# Party system
+party:
+  enabled: true
+  max-size: 2  # Maximum party size (for Duo mode)
+  invite-timeout: 30  # Invite timeout in seconds
+
+  messages:
+    # Party creation
+    created: "§aParty created! You are the leader."
+    already-in-party: "§cYou are already in a party!"
+
+    # Invites
+    invite-sent: "§aInvite sent to §e%player%§a!"
+    invite-received: "§e%leader% §ainvited you to their party! §e/party accept %leader%"
+    invite-expired: "§cYour invite from §e%leader% §chas expired."
+    no-invite: "§cYou don't have an invite from §e%leader%§c!"
+    already-invited: "§e%player% §calready has a pending invite!"
+    party-full: "§cYour party is full!"
+    cannot-invite-self: "§cYou cannot invite yourself!"
+    target-in-party: "§e%player% §cis already in a party!"
+
+    # Accept
+    joined: "§e%player% §ajoined the party!"
+    you-joined: "§aYou joined §e%leader%§a's party!"
+
+    # Kick
+    kicked: "§e%player% §chas been kicked from the party!"
+    you-kicked: "§cYou have been kicked from the party!"
+    cannot-kick-self: "§cYou cannot kick yourself! Use /party disband instead."
+    not-leader: "§cOnly the party leader can do this!"
+    not-in-your-party: "§e%player% §cis not in your party!"
+
+    # Leave
+    left: "§e%player% §cleft the party."
+    you-left: "§aYou left the party."
+    not-in-party: "§cYou are not in a party!"
+
+    # Disband
+    disbanded: "§cThe party has been disbanded."
+
+    # List
+    list-header: "§e§l=== Party Members ==="
+    list-leader: "§a%player% §7(Leader)"
+    list-member: "§7%player%"

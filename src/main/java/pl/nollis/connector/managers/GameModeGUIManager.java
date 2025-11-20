@@ -12,6 +12,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import pl.nollis.connector.NollisPluginsConnector;
 
 import java.util.List;
+import java.util.UUID;
 
 public class GameModeGUIManager {
 
@@ -168,11 +169,47 @@ public class GameModeGUIManager {
     private void teleportToGameMode(Player player, String gameModeName, ConfigurationSection modeSection) {
         player.closeInventory();
 
+        // Check if player is in a party
+        if (plugin.getPartyAPI().isInParty(player)) {
+            // Only leader can choose game mode for party
+            if (!plugin.getPartyAPI().isPartyLeader(player)) {
+                player.sendMessage("§cOnly the party leader can choose game modes!");
+                return;
+            }
+
+            // Teleport entire party
+            for (UUID memberUUID : plugin.getPartyAPI().getPartyMembers(player)) {
+                Player member = Bukkit.getPlayer(memberUUID);
+                if (member != null && member.isOnline()) {
+                    member.closeInventory();
+                    if (gameModeName.equalsIgnoreCase("towerpvp")) {
+                        teleportToTowerPvP(member, modeSection);
+                    } else {
+                        teleportToGenericGameMode(member, gameModeName, modeSection);
+                    }
+                }
+            }
+
+            String gameModeDisplay = modeSection.getString("display-name", gameModeName);
+            plugin.getPartyAPI().notifyPartyMembers(plugin.getPartyAPI().getParty(player),
+                "§aYour party is joining " + gameModeDisplay + "§a!");
+            return;
+        }
+
+        // Solo player - teleport normally
         // Handle TowerPvP specifically
         if (gameModeName.equalsIgnoreCase("towerpvp")) {
             teleportToTowerPvP(player, modeSection);
             return;
         }
+
+        teleportToGenericGameMode(player, gameModeName, modeSection);
+    }
+
+    /**
+     * Teleport player to a generic game mode
+     */
+    private void teleportToGenericGameMode(Player player, String gameModeName, ConfigurationSection modeSection) {
 
         // Generic teleportation for other game modes
         String worldName = modeSection.getString("target-world");
